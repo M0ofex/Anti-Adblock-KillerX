@@ -1,5 +1,8 @@
-! Title: AAK-Ultimate Filters
-! Description: Military-grade anti-adblock removal
+[Adblock Plus 2.0]
+! Title: Anti-Adblock Elite X Filters
+! Expires: 1 days
+! Homepage: https://github.com/M0ofex/anti-adblock-killerx
+! Description: anti-adblock removal
 ! Version: 3.0.0
 ! Last updated: 2025-06-08
 ! Coverage: 99.9% of all sites
