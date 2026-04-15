@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Anti-Adblock & Paywall Elite X
+// @name         Anti-AdblockElite X
 // @version      4.3.0
-// @namespace    https://github.com/M0ofex/anti-adblock-killerx
+// @namespace    https://github.com/M0ofex/Anti-Adblock-KillerX
 // @description  bypass for Adblock detectors and soft paywalls.
 // @author       Mofex_
 // @license      MIT
