@@ -15,138 +15,98 @@
 // ==/UserScript==
 
 (function() {
-
     'use strict';
 
+    // 1. CONFIGURATION & STATE
+    const config = {
+        enabled: GM_getValue('aak_enabled', true),
+        spoof: GM_getValue('aak_spoof', true)
+    };
 
-    // 1. CLOAKING & BAIT
+    if (!config.enabled) return;
 
-    // Change Referrer to trick sites into thinking the visit is coming from Twitter (to bypass blocks)
-
-    Object.defineProperty(document, 'referrer', { get: () => "https://t.co/" });
-
+    // 2. CLOAKING & BAIT
+    if (config.spoof) {
+        Object.defineProperty(document, 'referrer', { get: () => "https://t.co/" });
+    }
     Object.assign(window, { canRunAds: true, isAdblockerActive: false, adsAllowed: true });
 
-
     const DB = {
-        selectors: [
-            '.adblock', '.paywall', '#paywall', '.modal-open', 
-            '.sp-messaging-glass', '.fc-ab-root', '.ad-modal', '.tp-modal',
-            '.ab-root', '.adblock-overlay', '.adblock-wall', '.anti-adblock' // Added from Filter List
-        ],
+        selectors: ['.adblock', '.paywall', '#paywall', '.modal-open', '.sp-messaging-glass', '.fc-ab-root', '.ad-modal', '.tp-modal', '.ab-root', '.anti-adblock'],
         keys: ['adblock', 'whitelist', 'supporting ads', 'subscribe to read', 'disable your ad']
     };
 
-
     const tech = {
-
-        // UI Fixes: Remove Blur filters and re-enable scrolling
-
         fixUI: () => {
-
             const s = 'overflow:auto!important;position:static!important;filter:none!important;';
-
             [document.documentElement, document.body].forEach(el => el && (el.style.cssText += s));
-
             document.body?.classList.remove('no-scroll', 'paywall-active', 'modal-open', 'p-blocked');
-
         },
-
-
-        // Smart Detection: Is the element a blocking popup?
-
         isEvil: (el) => {
-
             if (!el || el.nodeType !== 1) return false;
-
             const style = window.getComputedStyle(el);
-
             const text = (el.innerText || '').toLowerCase();
-
             return (parseInt(style.zIndex) > 999 && style.position === 'fixed' && DB.keys.some(k => text.includes(k)));
-
         },
-
-
-        // Final removal of the element
-
         nuke: (el) => {
-
             if (!el) return;
-
             el.style.display = 'none';
-
             el.setAttribute('aria-hidden', 'true');
-
             requestAnimationFrame(() => el.remove());
-
         }
-
     };
 
+    // 3. SETTINGS DASHBOARD INJECTION
+    const injectDashboard = () => {
+        const dash = document.createElement('div');
+        dash.innerHTML = `
+            <div id="aak-dash" style="display:none; position:fixed; top:50px; right:50px; width:300px; background:#1e293b; color:white; border:1px solid #4361ee; border-radius:12px; z-index:999999; padding:20px; font-family:sans-serif; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+                <h3 style="color:#4cc9f0; margin-bottom:15px;">Elite X Settings</h3>
+                <label style="display:block; margin-bottom:10px;"><input type="checkbox" id="c-en" ${config.enabled?'checked':''}> Enable Protection</label>
+                <label style="display:block; margin-bottom:15px;"><input type="checkbox" id="c-sp" ${config.spoof?'checked':''}> Referrer Spoof</label>
+                <button id="s-sav" style="width:100%; background:#4361ee; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">Save & Reload</button>
+            </div>
+            <button id="s-tog" style="position:fixed; bottom:20px; right:20px; z-index:999999; background:#4361ee; color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3);">⚙️</button>
+        `;
+        document.body.appendChild(dash);
 
-    // 2. THE ENGINE
+        document.getElementById('s-tog').onclick = () => {
+            const d = document.getElementById('aak-dash');
+            d.style.display = d.style.display === 'none' ? 'block' : 'none';
+        };
+        document.getElementById('s-sav').onclick = () => {
+            GM_setValue('aak_enabled', document.getElementById('c-en').checked);
+            GM_setValue('aak_spoof', document.getElementById('c-sp').checked);
+            location.reload();
+        };
+    };
 
+    // 4. ENGINE
     const scan = (root) => {
-
         root.querySelectorAll?.(DB.selectors.join(',')).forEach(tech.nuke);
-
         if (tech.isEvil(root)) tech.nuke(root);
-
     };
-
 
     const observer = new MutationObserver(mutations => {
-
         tech.fixUI();
-
         mutations.forEach(m => m.addedNodes.forEach(node => {
-
             scan(node);
-
             if (node.querySelectorAll) node.querySelectorAll('*').forEach(scan);
-
         }));
-
     });
 
-
-    // 3. EXECUTION / STARTUP
-
     const init = () => {
-
         tech.fixUI();
-
         scan(document.body);
-
-        observer.observe(document.documentElement, { 
-
-            childList: true, 
-
-            subtree: true, 
-
-            attributes: true, 
-
-            attributeFilter: ['class', 'style'] 
-
-        });
-
+        observer.observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['class','style'] });
+        injectDashboard();
     };
 
-
-    // Immediate CSS Injection to hide elements before JavaScript fully loads
-
     GM_addStyle(`
-
-        ${DB.selectors.join(',')} { display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
-
+        ${DB.selectors.join(',')} { display:none!important; visibility:hidden!important; opacity:0!important; }
         [class*="blur"], [style*="filter: blur"] { filter: none !important; }
-
         body, html { overflow: auto !important; }
-
     `);
 
-
     document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
-
 })();
