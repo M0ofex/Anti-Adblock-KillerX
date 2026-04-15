@@ -27,10 +27,12 @@ To get 100% protection, you **must** complete both steps:
 1. Install a manager like [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/).
 2. [**Click here to Install AakScript X**](https://raw.githubusercontent.com/M0ofex/anti-adblock-killerx/main/AakXScript.user.js)
 
-### Step 2: Subscribe to the Filter List (The Shield)
-This hides the visual overlays and banners neutralized by the script.
-* [**Subscribe to Elite X Filters**](https://m0ofex.github.io/anti-adblock-killerx/#step-2)
-* *(Supported by uBlock Origin, AdGuard, and AdBlock Plus)*
+### Step 2: Subscribe to the Filter List
+GitHub prevents one-click subscriptions. Please use one of the following:
+
+1. [**Automatic Setup**](https://m0ofex.github.io/anti-adblock-killerx/) (Click "Subscribe" on our landing page).
+2. **Manual Setup:** Copy the link below and paste it into your Adblocker's "Custom Filters" or "Import" section:
+   `https://raw.githubusercontent.com/M0ofex/anti-adblock-killerx/main/AakEliteX-filters.txt`
 
 ---
 
