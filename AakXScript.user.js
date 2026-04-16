@@ -42,9 +42,20 @@
 
     const tech = {
         fixUI: () => {
-            const s = 'overflow:auto!important;position:static!important;filter:none!important;';
-            [document.documentElement, document.body].forEach(el => el && (el.style.cssText += s));
-            document.body?.classList.remove('no-scroll', 'paywall-active', 'modal-open', 'p-blocked');
+            const s = 'overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;';
+            [document.documentElement, document.body].forEach(el => {
+                if (el) {
+                    el.style.cssText += s;
+                    el.classList.remove('no-scroll', 'blocked', 'adblock-active');
+                }
+            });
+            
+            document.querySelectorAll('div').forEach(div => {
+                const style = window.getComputedStyle(div);
+                if (style.position === 'fixed' && style.zIndex > 100 && style.pointerEvents === 'auto' && div.innerText === "") {
+                    tech.nuke(div); 
+                }
+            });
         },
         isEvil: (el) => {
             if (!el || el.nodeType !== 1) return false;
