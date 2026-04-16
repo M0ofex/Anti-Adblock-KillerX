@@ -124,9 +124,20 @@
     };
 
     GM_addStyle(`
-        ${DB.selectors.join(',')} { display:none!important; visibility:hidden!important; opacity:0!important; }
-        [class*="blur"], [style*="filter: blur"] { filter: none !important; }
-        body, html { overflow: auto !important; }
+        /* إخفاء أي عنصر يحتوي على كلمة adblock في الكلاس أو المعرف */
+        [class*="igniel"], [class*="AdBlock"], [id*="AdBlock"] { 
+            display:none!important; 
+            visibility:hidden!important; 
+            pointer-events:none!important; 
+            opacity:0!important; 
+        }
+        
+        /* إجبار الصفحة على التمرير مهما حاول الموقع منعه */
+        html, body { 
+            overflow: auto !important; 
+            height: auto !important; 
+            position: relative !important; 
+        }
     `);
 
     document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
