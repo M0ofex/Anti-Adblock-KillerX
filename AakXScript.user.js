@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Anti-AdblockElite X
-// @version      4.3.1
+// @version      1.0.0
 // @namespace    https://github.com/M0ofex/Anti-Adblock-KillerX
 // @description  bypass for Adblock detectors and soft paywalls.
 // @author       Mofex_
@@ -124,7 +124,7 @@
     };
 
     GM_addStyle(`
-        /* إخفاء أي عنصر يحتوي على كلمة adblock في الكلاس أو المعرف */
+
         [class*="igniel"], [class*="AdBlock"], [id*="AdBlock"] { 
             display:none!important; 
             visibility:hidden!important; 
@@ -132,11 +132,15 @@
             opacity:0!important; 
         }
         
-        /* إجبار الصفحة على التمرير مهما حاول الموقع منعه */
         html, body { 
             overflow: auto !important; 
             height: auto !important; 
-            position: relative !important; 
+            position: relative !important;
+            pointer-events: auto !important;
+            user-select: auto !important;
+            [class*="overlay"], [class*="mask"], [class*="backdrop"] {
+            pointer-events: none !important;
+            display: none !important;
         }
     `);
 
