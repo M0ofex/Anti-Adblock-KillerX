@@ -3,7 +3,7 @@
 ! Expires: 1 days
 ! Homepage: https://github.com/M0ofex/anti-adblock-killerx
 ! Description: anti-adblock removal
-! Version: 3.0.0
+! Version: 3.1.0
 ! Last updated: 2025-06-08
 ! Coverage: 99.9% of all sites
 ! Tested sites: 10,000+
